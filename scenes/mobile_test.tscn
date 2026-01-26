@@ -103,22 +103,25 @@ grow_vertical = 2
 
 [node name="Button" type="Button" parent="Control"]
 layout_mode = 0
-offset_right = 70.0
-offset_bottom = 31.0
+offset_top = -62.0
+offset_right = 127.0
+offset_bottom = -7.3703003
+scale = Vector2(1, 1.0799987)
 text = "Play"
 
 [node name="Button2" type="Button" parent="Control"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 70.0
-offset_bottom = 62.0
+offset_right = 127.0
+offset_bottom = 59.703735
+scale = Vector2(1, 1.0799987)
 text = "Settings"
 
 [node name="Button3" type="Button" parent="Control"]
 layout_mode = 0
-offset_top = 62.0
-offset_right = 70.0
-offset_bottom = 93.0
+offset_top = 69.0
+offset_right = 127.0
+offset_bottom = 121.77783
+scale = Vector2(1, 1.0799987)
 text = "Quit
 "
 
@@ -129,8 +132,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -154.5
-offset_top = -57.0
-offset_right = 154.5
+offset_left = -152.0
+offset_top = -88.0
+offset_right = 157.0
+offset_bottom = -31.0
 grow_horizontal = 2
 grow_vertical = 0
