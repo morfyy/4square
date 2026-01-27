@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://c6ly18g6xoioh"]
 
-[ext_resource type="Texture2D" uid="uid://djh6yv8xrl4li" path="res://icon.svg" id="1_iyxdx"]
+[ext_resource type="Texture2D" uid="uid://d1v03lqmgqnpm" path="res://assets/hole.png" id="1_iyxdx"]
 [ext_resource type="Script" uid="uid://cc5outwu2416w" path="res://scenes/hole.gd" id="1_lerre"]
 
 [node name="Hole" type="TextureButton"]
-modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 1, 1, 0.50980395)
 offset_right = 128.0
 offset_bottom = 128.0
 texture_normal = ExtResource("1_iyxdx")

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://55nqiebafw32" path="res://scenes/game.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://c478wosx0cfy3" path="res://scenes/board.gd" id="2_lnu2h"]
 [ext_resource type="Script" uid="uid://d38n3go2r0oya" path="res://custom_nodes/mobile_control.gd" id="2_yqjtg"]
-[ext_resource type="Texture2D" uid="uid://djh6yv8xrl4li" path="res://icon.svg" id="3_lbhrr"]
+[ext_resource type="Texture2D" uid="uid://b7gdkmb15vvwm" path="res://assets/npatch.png" id="3_lbhrr"]
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -35,11 +35,5 @@ offset_top = -512.0
 offset_right = 512.0
 offset_bottom = 512.0
 texture = ExtResource("3_lbhrr")
-region_rect = Rect2(0, 0, 128, 128)
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+region_rect = Rect2(0, 0, 1024, 1024)
 script = ExtResource("2_lnu2h")
