@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckcto68c8s4p5"]
+
+[ext_resource type="Script" uid="uid://b0j1cjvm7d151" path="res://custom_nodes/auto_scale.gd" id="1_ogflv"]
+
+[node name="AutoScale" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ogflv")
+metadata/_custom_type_script = "uid://bspxfvhrhgxwt"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
