@@ -13,10 +13,13 @@ func generate(gridsize:Vector2i) -> void:
 	for child in get_children():
 		child.queue_free()
 	
+	var index:int = 0
 	for x in range(gridsize.x):
 		for y in range(gridsize.y):
 			var inst:Hole = hole_pck.instantiate()
+			inst.index = index
 			inst.size = hole_size
 			inst.position.x = x*hole_size.x
 			inst.position.y = y*hole_size.y
 			add_child(inst)
+			index += 1

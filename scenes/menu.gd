@@ -1,7 +1,7 @@
 extends Control
+class_name Menu
 
 var game:PackedScene = preload("res://scenes/game.tscn")
-
 
 
 
