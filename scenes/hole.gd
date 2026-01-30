@@ -11,7 +11,6 @@ func _on_pressed() -> void:
 
 
 
-
 func set_value(to:int):
 	value = to
 	$red.visible = to == 1
