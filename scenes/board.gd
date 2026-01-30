@@ -4,8 +4,6 @@ class_name Board
 var hole_pck:PackedScene = preload("res://scenes/hole.tscn")
 
 
-func _ready() -> void:
-	generate(Vector2i(6,6))
 
 func generate(gridsize:Vector2i) -> void:
 	var hole_size:Vector2 = Vector2(size.x/gridsize.x, size.y/gridsize.y)
