@@ -19,26 +19,28 @@ func get_active_player() -> Player:
 
 func _ready() -> void:
 	signals.connect("local_move_requested", local_move_requested)
+	icons[0].activate()
 
-
-
-
-func create(my_gridsize:Vector2i) -> void:
+func create(my_gridsize:Vector2i, p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
 	gridsize = my_gridsize
 	board.generate(my_gridsize)
-
-func add_player(player_name:String, player_type:Player.Type) -> void:
-	var new_player:Player = player_pck.instantiate()
-	new_player.username = player_name
-	new_player.type = player_type
 	
-	new_player.id = players.get_child_count()
+	var p1:Player = player_pck.instantiate()
+	var p2:Player = player_pck.instantiate()
+	p1.username = p1name
+	p2.username = p2name
+	p1.type = p1type
+	p2.type = p2type
 	
-	if new_player.id == 0:
-		new_player.is_active = true
+	p1.id = 0
+	p2.id = 1
 	
-	players.add_child(new_player)
-	new_player.connect("move_submitted", move_submitted)
+	p1.is_active = true
+	
+	players.add_child(p1)
+	players.add_child(p2)
+	p1.connect("move_submitted", move_submitted)
+	p2.connect("move_submitted", move_submitted)
 
 
 
@@ -56,8 +58,7 @@ func move_submitted(by:int, at_hole:int) -> void:
 
 	get_active_player().is_active = false
 	icons[active_player].deactivate()
-	active_player += 1
-	active_player = active_player % players.get_child_count()
+	active_player = int(!bool(active_player))
 	get_active_player().is_active = true
 	icons[active_player].activate()
 	

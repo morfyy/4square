@@ -8,6 +8,8 @@ class_name PlayerIcon
 
 func _ready() -> void:
 	$ColorRect.color = color
+	$ColorRect.scale = Vector2(0.9,0.7)
+	$Label.modulate = Color.WHITE
 
 
 func activate() -> void:
