@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6ksn1iad1qij"]
+[gd_scene load_steps=11 format=3 uid="uid://b6ksn1iad1qij"]
 
 [ext_resource type="Script" uid="uid://55nqiebafw32" path="res://scenes/game.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://c478wosx0cfy3" path="res://scenes/board.gd" id="2_lnu2h"]
@@ -6,6 +6,34 @@
 [ext_resource type="Texture2D" uid="uid://b7gdkmb15vvwm" path="res://assets/npatch.png" id="3_lbhrr"]
 [ext_resource type="FontFile" uid="uid://bh5bwya71s3eh" path="res://fonts/Bear Days.ttf" id="5_iywne"]
 [ext_resource type="PackedScene" uid="uid://bg8datoo3ujc3" path="res://scenes/player_icon.tscn" id="6_p57ef"]
+[ext_resource type="PackedScene" uid="uid://vrqvy3xgj507" path="res://scenes/minimenu.tscn" id="7_u5sy4"]
+
+[sub_resource type="Animation" id="Animation_p57ef"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_iywne"]
 resource_name = "pop"
@@ -33,33 +61,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_p57ef"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Label:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Label:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_u5sy4"]
@@ -151,6 +152,7 @@ mobile_scale_multiplier = 1.8
 metadata/_custom_type_script = "uid://d38n3go2r0oya"
 
 [node name="PlayerIcon" parent="player1" instance=ExtResource("6_p57ef")]
+position = Vector2(10, 27)
 color = Color(1, 0.37799093, 0.31005007, 1)
 
 [node name="player2" type="Control" parent="."]
@@ -164,5 +166,8 @@ mobile_scale_multiplier = 1.8
 metadata/_custom_type_script = "uid://d38n3go2r0oya"
 
 [node name="PlayerIcon" parent="player2" instance=ExtResource("6_p57ef")]
-position = Vector2(-224, 0)
+position = Vector2(-234, 27)
 color = Color(0.29333335, 0.5063266, 1, 1)
+
+[node name="minimenu" parent="." instance=ExtResource("7_u5sy4")]
+layout_mode = 1

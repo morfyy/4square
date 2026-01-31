@@ -6,10 +6,14 @@ class_name PlayerIcon
 @export var color:Color = Color.WHITE
 
 
+
 func _ready() -> void:
 	$ColorRect.color = color
 	$ColorRect.scale = Vector2(0.9,0.7)
 	$Label.modulate = Color.WHITE
+
+func set_label(to:String) -> void:
+	$Label.text = to
 
 
 func activate() -> void:
