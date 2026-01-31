@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6ksn1iad1qij"]
+[gd_scene load_steps=10 format=3 uid="uid://b6ksn1iad1qij"]
 
 [ext_resource type="Script" uid="uid://55nqiebafw32" path="res://scenes/game.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://c478wosx0cfy3" path="res://scenes/board.gd" id="2_lnu2h"]
 [ext_resource type="Script" uid="uid://d38n3go2r0oya" path="res://custom_nodes/mobile_control.gd" id="2_yqjtg"]
 [ext_resource type="Texture2D" uid="uid://b7gdkmb15vvwm" path="res://assets/npatch.png" id="3_lbhrr"]
 [ext_resource type="FontFile" uid="uid://bh5bwya71s3eh" path="res://fonts/Bear Days.ttf" id="5_iywne"]
+[ext_resource type="PackedScene" uid="uid://bg8datoo3ujc3" path="res://scenes/player_icon.tscn" id="6_p57ef"]
 
 [sub_resource type="Animation" id="Animation_iywne"]
 resource_name = "pop"
@@ -72,8 +73,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -12.0
-offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
@@ -112,6 +111,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_yqjtg")
+mobile_scale_multiplier = 1.0
 metadata/_custom_type_script = "uid://d38n3go2r0oya"
 
 [node name="Label" type="Label" parent="message"]
@@ -142,3 +142,27 @@ libraries = {
 }
 
 [node name="players" type="Node" parent="."]
+
+[node name="player1" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+script = ExtResource("2_yqjtg")
+mobile_scale_multiplier = 1.8
+metadata/_custom_type_script = "uid://d38n3go2r0oya"
+
+[node name="PlayerIcon" parent="player1" instance=ExtResource("6_p57ef")]
+color = Color(1, 0.37799093, 0.31005007, 1)
+
+[node name="player2" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+script = ExtResource("2_yqjtg")
+mobile_scale_multiplier = 1.8
+metadata/_custom_type_script = "uid://d38n3go2r0oya"
+
+[node name="PlayerIcon" parent="player2" instance=ExtResource("6_p57ef")]
+position = Vector2(-224, 0)
+color = Color(0.29333335, 0.5063266, 1, 1)

@@ -10,7 +10,7 @@ var on_mobile:bool = false
 
 func _ready() -> void:
 	on_mobile = OS.get_name()=="Android" or OS.get_name()=="iOS"
-	#on_mobile = true # debug
+	on_mobile = true # debug
 	get_window().size_changed.connect(on_window_size_changed)
 	on_window_size_changed()
 

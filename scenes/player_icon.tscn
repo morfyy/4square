@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg8datoo3ujc3"]
+
+[ext_resource type="Script" uid="uid://b7x5dxhoexq53" path="res://scenes/player_icon.gd" id="1_3ldl0"]
+[ext_resource type="FontFile" uid="uid://bh5bwya71s3eh" path="res://fonts/Bear Days.ttf" id="1_grgdn"]
+
+[node name="PlayerIcon" type="Node2D"]
+script = ExtResource("1_3ldl0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 224.0
+offset_bottom = 69.0
+scale = Vector2(0.9, 0.7)
+pivot_offset = Vector2(112, 34)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 219.0
+offset_bottom = 64.0
+color = Color(0.12955853, 0.12955844, 0.12955841, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 224.0
+offset_bottom = 69.0
+theme_override_fonts/font = ExtResource("1_grgdn")
+theme_override_font_sizes/font_size = 24
+text = "Player Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true

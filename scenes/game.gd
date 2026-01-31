@@ -10,6 +10,8 @@ var gridsize:Vector2i = Vector2i(5,5)
 @onready var players:Node = $players
 var active_player:int = 0
 
+@onready var icons:Array = [$player1/PlayerIcon, $player2/PlayerIcon]
+
 func get_active_player() -> Player:
 	return players.get_child(active_player)
 
@@ -53,9 +55,11 @@ func move_submitted(by:int, at_hole:int) -> void:
 	board.get_child(at_hole).set_value(by)
 
 	get_active_player().is_active = false
+	icons[active_player].deactivate()
 	active_player += 1
 	active_player = active_player % players.get_child_count()
 	get_active_player().is_active = true
+	icons[active_player].activate()
 	
 	pop_message(get_active_player().username+"'s turn!", [Color.RED,Color.BLUE][active_player] )
 
