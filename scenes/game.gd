@@ -5,6 +5,7 @@ class_name Game
 var player_pck:PackedScene = preload("res://scenes/player.tscn")
 var menu_pck:PackedScene = preload("res://scenes/menu.tscn")
 
+
 @onready var board:Board = $board/Board
 var gridsize:Vector2i = Vector2i(5,5)
 var empties:Array[Vector2i] = []
@@ -24,6 +25,7 @@ func get_active_player() -> Player:
 
 func _ready() -> void:
 	signals.connect("local_marble_submitted", local_marble_submitted)
+	signals.connect("local_slide_submitted", local_slide_submitted)
 	minimenu.btn1.connect("pressed", back_to_menu)
 	minimenu.btn2.connect("pressed", restart_game)
 
@@ -32,6 +34,7 @@ func create(my_gridsize:Vector2i, my_empties:Array[Vector2i], p1name:String, p1t
 	gridsize = my_gridsize
 	empties = my_empties
 	board.generate(gridsize, empties)
+	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	
 	var p1:Player = player_pck.instantiate()
 	var p2:Player = player_pck.instantiate()
@@ -51,22 +54,41 @@ func create(my_gridsize:Vector2i, my_empties:Array[Vector2i], p1name:String, p1t
 	players.add_child(p2)
 	p1.connect("marble_submitted", marble_submitted)
 	p2.connect("marble_submitted", marble_submitted)
+	p1.connect("slide_submitted", slide_submitted)
+	p2.connect("slide_submitted", slide_submitted)
 
 
 func local_marble_submitted(tileindex:int, holeindex:int) -> void:
 	if get_active_player().type != Player.Type.LOCAL:
 		return
-	marble_submitted(get_active_player().id, tileindex, holeindex)
-
-
-
-func marble_submitted(by:int, tileindex:int, holeindex:int) -> void:
-	if get_active_player().id != by:
-		return
-	turns_count += 1
+	marble_submitted(active_player, tileindex, holeindex)
 	
-	board.get_hole(tileindex,holeindex).set_value(by)
+func local_slide_submitted(tileindex:int, to:Vector2i) -> void:
+	if get_active_player().type != Player.Type.LOCAL:
+		return
+	slide_submitted(active_player, tileindex, to)
 
+
+
+func marble_submitted(by_player:int, tileindex:int, holeindex:int) -> void:
+	if active_player != by_player:
+		return
+	board.get_hole(tileindex,holeindex).set_value(by_player)
+	board.set_tiles_state(Tile.AWAITING_SLIDE)
+
+
+func slide_submitted(by_player:int, tileindex:int, dir:Vector2i) -> void:
+	if active_player != by_player:
+		return
+	
+	var tile:Tile = board.get_child(tileindex)
+	var tween:Tween = get_tree().create_tween()
+	tween.tween_property(tile, "position", tile.position+Vector2(dir)*tile.size, 0.3).set_trans(Tween.TRANS_SINE)
+	tween.tween_callback(next_turn)
+	board.set_tiles_state(Tile.SLIDING)
+
+func next_turn() -> void:
+	turns_count += 1
 	get_active_player().is_active = false
 	icons[active_player].deactivate()
 	active_player = int(!bool(active_player))
@@ -74,6 +96,7 @@ func marble_submitted(by:int, tileindex:int, holeindex:int) -> void:
 	icons[active_player].activate()
 	
 	pop_message(get_active_player().username+"'s turn!", [Color.RED,Color.BLUE][active_player] )
+	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	
 	# TODO check if won first
 	
@@ -98,6 +121,7 @@ func back_to_menu() -> void:
 
 func restart_game() -> void:
 	board.generate(gridsize, empties)
+	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	get_tree().paused = false
 	minimenu.unpop()
 	turns_count = 0

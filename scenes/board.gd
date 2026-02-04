@@ -25,4 +25,8 @@ func generate(gridsize:Vector2i, empties:Array[Vector2i]) -> void:
 			index += 1
 
 func get_hole(tileindex:int, holeindex:int) -> Hole:
-	return get_child(tileindex).get_child(holeindex)
+	return get_child(tileindex).holes.get_child(holeindex)
+
+func set_tiles_state(to:int) -> void:
+	for t:Tile in get_children():
+		t.state = to
