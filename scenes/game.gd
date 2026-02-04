@@ -23,7 +23,7 @@ func get_active_player() -> Player:
 
 
 func _ready() -> void:
-	signals.connect("local_move_requested", local_move_requested)
+	signals.connect("local_marble_submitted", local_marble_submitted)
 	minimenu.btn1.connect("pressed", back_to_menu)
 	minimenu.btn2.connect("pressed", restart_game)
 
