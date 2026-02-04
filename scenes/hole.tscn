@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cc5outwu2416w" path="res://scenes/hole.gd" id="1_lerre"]
 
 [node name="Hole" type="TextureButton"]
-modulate = Color(1, 1, 1, 0.50980395)
+self_modulate = Color(1, 1, 1, 0.54509807)
 offset_right = 128.0
 offset_bottom = 128.0
 texture_normal = ExtResource("1_iyxdx")
@@ -43,5 +43,3 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 1, 1)
-
-[connection signal="pressed" from="." to="." method="_on_pressed"]

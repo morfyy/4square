@@ -1,4 +1,4 @@
 extends Node
 # SignalManager
 
-signal local_move_requested(int) # index:int at which hole
+signal local_move_requested(tileindex:int, holeindex:int)

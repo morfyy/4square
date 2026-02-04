@@ -12,6 +12,6 @@ var username:String = "Player"
 var type:Type = Type.LOCAL
 var is_active:bool = false
 
-signal move_submitted(by_player:int,at_hole:int)
+signal marble_submitted(by_player:int,tileindex:int,holeindex:int)
 # id - from which player
 # index - at which hole

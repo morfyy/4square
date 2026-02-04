@@ -1,12 +1,12 @@
 extends NinePatchRect
 class_name Board
 
-var hole_pck:PackedScene = preload("res://scenes/hole.tscn")
+var tile_pck:PackedScene = preload("res://scenes/tile.tscn")
 
 
 
-func generate(gridsize:Vector2i) -> void:
-	var hole_size:Vector2 = Vector2(size.x/gridsize.x, size.y/gridsize.y)
+func generate(gridsize:Vector2i, empties:Array[Vector2i]) -> void:
+	var tile_size:Vector2 = Vector2(size.x/gridsize.x, size.y/gridsize.y)
 	
 	for child in get_children():
 		child.queue_free()
@@ -14,10 +14,15 @@ func generate(gridsize:Vector2i) -> void:
 	var index:int = 0
 	for x in range(gridsize.x):
 		for y in range(gridsize.y):
-			var inst:Hole = hole_pck.instantiate()
-			inst.index = index
-			inst.size = hole_size
-			inst.position.x = x*hole_size.x
-			inst.position.y = y*hole_size.y
+			if Vector2i(x,y) in empties:
+				continue
+			var inst:Tile = tile_pck.instantiate()
+			inst.tileindex = index
+			inst.set_tilesize(tile_size)
+			inst.position.x = x*tile_size.x
+			inst.position.y = y*tile_size.y
 			add_child(inst)
 			index += 1
+
+func get_hole(tileindex:int, holeindex:int) -> Hole:
+	return get_child(tileindex).get_child(holeindex)

@@ -7,6 +7,7 @@ var menu_pck:PackedScene = preload("res://scenes/menu.tscn")
 
 @onready var board:Board = $board/Board
 var gridsize:Vector2i = Vector2i(5,5)
+var empties:Array[Vector2i] = []
 var turns_count:int = 0
 
 @onready var players:Node = $players
@@ -26,9 +27,11 @@ func _ready() -> void:
 	minimenu.btn1.connect("pressed", back_to_menu)
 	minimenu.btn2.connect("pressed", restart_game)
 
-func create(my_gridsize:Vector2i, p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
+# empties, where in grid to don't have tiles
+func create(my_gridsize:Vector2i, my_empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
 	gridsize = my_gridsize
-	board.generate(my_gridsize)
+	empties = my_empties
+	board.generate(gridsize, empties)
 	
 	var p1:Player = player_pck.instantiate()
 	var p2:Player = player_pck.instantiate()
@@ -46,23 +49,23 @@ func create(my_gridsize:Vector2i, p1name:String, p1type:Player.Type, p2name:Stri
 	
 	players.add_child(p1)
 	players.add_child(p2)
-	p1.connect("move_submitted", move_submitted)
-	p2.connect("move_submitted", move_submitted)
+	p1.connect("marble_submitted", marble_submitted)
+	p2.connect("marble_submitted", marble_submitted)
 
 
-
-func local_move_requested(at_hole:int) -> void:
+func local_move_requested(tileindex:int, holeindex:int) -> void:
 	if get_active_player().type != Player.Type.LOCAL:
 		return
-	move_submitted(get_active_player().id, at_hole)
+	marble_submitted(get_active_player().id, tileindex, holeindex)
 
 
-func move_submitted(by:int, at_hole:int) -> void:
+
+func marble_submitted(by:int, tileindex:int, holeindex:int) -> void:
 	if get_active_player().id != by:
 		return
 	turns_count += 1
 	
-	board.get_child(at_hole).set_value(by)
+	board.get_hole(tileindex,holeindex).set_value(by)
 
 	get_active_player().is_active = false
 	icons[active_player].deactivate()
@@ -74,7 +77,7 @@ func move_submitted(by:int, at_hole:int) -> void:
 	
 	# TODO check if won first
 	
-	if turns_count >= gridsize.x * gridsize.y:
+	if turns_count >= (gridsize.x * gridsize.y - empties.size())*4:
 		draw_game()
 
 
@@ -94,8 +97,7 @@ func back_to_menu() -> void:
 	queue_free()
 
 func restart_game() -> void:
-	for hole:Hole in board.get_children():
-		hole.set_value(-1)
+	board.generate(gridsize, empties)
 	get_tree().paused = false
 	minimenu.unpop()
 	turns_count = 0
@@ -110,8 +112,8 @@ func pop_message(msg:String, msg_color:Color = Color.WHITE) -> void:
 
 
 
-func gridpos_to_index(gridpos:Vector2i) -> int:
-	return gridpos.y*gridsize.x + gridsize.x
+#func gridpos_to_index(gridpos:Vector2i) -> int:
+#	return gridpos.y*gridsize.x + gridsize.x
 
-func index_to_gridpos(index:int) -> Vector2i:
-	return Vector2i( index%gridsize.x, int(float(index)/gridsize.y) )
+#func index_to_gridpos(index:int) -> Vector2i:
+#	return Vector2i( index%gridsize.x, int(float(index)/gridsize.y) )

@@ -1,17 +1,21 @@
 extends TextureButton
 class_name Hole
 
-var index:int = 0
+var holeindex:int = 0
+signal hole_pressed(_index:int)
 
 var value:int = -1
 
+func _ready() -> void:
+	connect("pressed", _on_pressed)
+
+
+
 func _on_pressed() -> void: 
-	if value >= 0:
-		return
-	signals.local_move_requested.emit(index)
+	hole_pressed.emit(holeindex)
 
 
-func set_value(to:int):
+func set_value(to:int) -> void:
 	value = to
 	$red.visible = to == 0
 	$blue.visible = to == 1

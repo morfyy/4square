@@ -93,6 +93,7 @@ portrait_scale_multiplier = 1.8
 metadata/_custom_type_script = "uid://d38n3go2r0oya"
 
 [node name="Board" type="NinePatchRect" parent="board"]
+self_modulate = Color(0.72882164, 0.72882205, 0.7288219, 1)
 layout_mode = 0
 offset_left = -512.0
 offset_top = -512.0
