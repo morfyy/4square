@@ -53,7 +53,7 @@ func create(my_gridsize:Vector2i, my_empties:Array[Vector2i], p1name:String, p1t
 	p2.connect("marble_submitted", marble_submitted)
 
 
-func local_move_requested(tileindex:int, holeindex:int) -> void:
+func local_marble_submitted(tileindex:int, holeindex:int) -> void:
 	if get_active_player().type != Player.Type.LOCAL:
 		return
 	marble_submitted(get_active_player().id, tileindex, holeindex)

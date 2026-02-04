@@ -13,7 +13,7 @@ func _ready() -> void:
 func hole_pressed(holeindex:int) -> void:
 	if get_child(holeindex).value >= 0:
 		return
-	signals.local_move_requested.emit(tileindex, holeindex)
+	signals.local_marble_submitted.emit(tileindex, holeindex)
 
 
 func set_tilesize(to:Vector2) -> void:
