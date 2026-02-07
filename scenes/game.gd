@@ -7,8 +7,6 @@ var menu_pck:PackedScene = preload("res://scenes/menu.tscn")
 
 
 @onready var board:Board = $board/Board
-var gridsize:Vector2i = Vector2i(5,5)
-var empties:Array[Vector2i] = []
 var turns_count:int = 0
 
 @onready var players:Node = $players
@@ -30,9 +28,7 @@ func _ready() -> void:
 	minimenu.btn2.connect("pressed", restart_game)
 
 # empties, where in grid to don't have tiles
-func create(my_gridsize:Vector2i, my_empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
-	gridsize = my_gridsize
-	empties = my_empties
+func create(gridsize:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
 	board.generate(gridsize, empties)
 	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	
@@ -84,11 +80,23 @@ func slide_submitted(by_player:int, tileindex:int, dir:Vector2i) -> void:
 	var tile:Tile = board.get_child(tileindex)
 	var tween:Tween = get_tree().create_tween()
 	tween.tween_property(tile, "position", tile.position+Vector2(dir)*tile.size, 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_callback(next_turn)
+	tween.tween_callback(slide_finished)
 	board.set_tiles_state(Tile.SLIDING)
 
-func next_turn() -> void:
+func slide_finished() -> void:
 	turns_count += 1
+	
+	# check victory
+	var winner:Board.Winner = board.get_winner()
+	if winner != Board.Winner.NONE:
+		gameover(false, winner)
+		return
+	
+	# check draw
+	if turns_count >= (board.gridsize.x * board.gridsize.y - board.empties.size())*4:
+		gameover(true, winner)
+		return
+	
 	get_active_player().is_active = false
 	icons[active_player].deactivate()
 	active_player = int(!bool(active_player))
@@ -97,17 +105,19 @@ func next_turn() -> void:
 	
 	pop_message(get_active_player().username+"'s turn!", [Color.RED,Color.BLUE][active_player] )
 	board.set_tiles_state(Tile.AWAITING_MARBLE)
-	
-	# TODO check if won first
-	
-	if turns_count >= (gridsize.x * gridsize.y - empties.size())*4:
-		draw_game()
 
 
 
-func draw_game() -> void:
+func gameover(game_draw:bool, winner:Board.Winner) -> void:
 	get_tree().paused = true
-	minimenu.label.text = "DRAW !"
+	if game_draw:
+		minimenu.label.text = "DRAW !"
+	elif winner == Board.Winner.BOTH:
+		minimenu.label.text = "TIE !"
+	elif winner == Board.Winner.P1:
+		minimenu.label.text = "RED WON !"
+	else:
+		minimenu.label.text = "BLUE WON !"
 	minimenu.btn1.text = "BACK TO MENU"
 	minimenu.btn2.text = "PLAY AGAIN"
 	minimenu.pop()
@@ -120,7 +130,7 @@ func back_to_menu() -> void:
 	queue_free()
 
 func restart_game() -> void:
-	board.generate(gridsize, empties)
+	board.generate(board.gridsize, board.empties)
 	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	get_tree().paused = false
 	minimenu.unpop()

@@ -22,16 +22,16 @@ func _ready() -> void:
 
 func tile_pressed(holeindex:int) -> void:
 	if state == AWAITING_MARBLE:
-		marble(holeindex)
+		local_marble_requested(holeindex)
 	elif state == AWAITING_SLIDE:
-		slide()
+		local_slide_requested()
 
-func marble(holeindex:int) -> void:
+func local_marble_requested(holeindex:int) -> void:
 	if holes.get_child(holeindex).value >= 0:
 		return
 	signals.local_marble_submitted.emit(tileindex, holeindex)
 
-func slide() -> void:
+func local_slide_requested() -> void:
 	var dir:Vector2i = Vector2i(0,0)
 	for ray in $Area2D.get_children():
 		if not ray is RayCast2D:
