@@ -26,11 +26,11 @@ func _ready() -> void:
 	signals.connect("local_slide_submitted", local_slide_submitted)
 	minimenu.btn1.connect("pressed", back_to_menu)
 	minimenu.btn2.connect("pressed", restart_game)
+	board.connect("slide_finished", slide_finished)
 
 # empties, where in grid to don't have tiles
 func create(gridsize:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
 	board.generate(gridsize, empties)
-	board.set_tiles_state(Tile.AWAITING_MARBLE)
 	
 	var p1:Player = player_pck.instantiate()
 	var p2:Player = player_pck.instantiate()
@@ -54,34 +54,29 @@ func create(gridsize:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Pl
 	p2.connect("slide_submitted", slide_submitted)
 
 
-func local_marble_submitted(tileindex:int, holeindex:int) -> void:
+func local_marble_submitted(gridpos:Vector2i) -> void:
 	if get_active_player().type != Player.Type.LOCAL:
 		return
-	marble_submitted(active_player, tileindex, holeindex)
+	marble_submitted(active_player, gridpos)
 	
-func local_slide_submitted(tileindex:int, to:Vector2i) -> void:
+func local_slide_submitted(tilepos:Vector2i, dir:Vector2i) -> void:
 	if get_active_player().type != Player.Type.LOCAL:
 		return
-	slide_submitted(active_player, tileindex, to)
+	slide_submitted(active_player, tilepos, dir)
 
 
 
-func marble_submitted(by_player:int, tileindex:int, holeindex:int) -> void:
+func marble_submitted(by_player:int, gridpos:Vector2i) -> void:
 	if active_player != by_player:
 		return
-	board.get_hole(tileindex,holeindex).set_value(by_player)
-	board.set_tiles_state(Tile.AWAITING_SLIDE)
+	board.place_marble(by_player, gridpos)
 
 
-func slide_submitted(by_player:int, tileindex:int, dir:Vector2i) -> void:
+func slide_submitted(by_player:int, tilepos:Vector2i, dir:Vector2i) -> void:
 	if active_player != by_player:
 		return
-	
-	var tile:Tile = board.get_child(tileindex)
-	var tween:Tween = get_tree().create_tween()
-	tween.tween_property(tile, "position", tile.position+Vector2(dir)*tile.size, 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_callback(slide_finished)
-	board.set_tiles_state(Tile.SLIDING)
+	board.slide_tile(tilepos, dir)
+
 
 func slide_finished() -> void:
 	turns_count += 1
@@ -97,6 +92,7 @@ func slide_finished() -> void:
 		gameover(true, winner)
 		return
 	
+	# next turn
 	get_active_player().is_active = false
 	icons[active_player].deactivate()
 	active_player = int(!bool(active_player))
@@ -104,7 +100,6 @@ func slide_finished() -> void:
 	icons[active_player].activate()
 	
 	pop_message(get_active_player().username+"'s turn!", [Color.RED,Color.BLUE][active_player] )
-	board.set_tiles_state(Tile.AWAITING_MARBLE)
 
 
 
@@ -130,8 +125,7 @@ func back_to_menu() -> void:
 	queue_free()
 
 func restart_game() -> void:
-	board.generate(board.gridsize, board.empties)
-	board.set_tiles_state(Tile.AWAITING_MARBLE)
+	board.reset()
 	get_tree().paused = false
 	minimenu.unpop()
 	turns_count = 0

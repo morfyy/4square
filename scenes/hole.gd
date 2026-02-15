@@ -1,21 +1,24 @@
 extends TextureButton
 class_name Hole
 
-var holeindex:int = 0
-signal hole_pressed(_index:int)
+var gridpos:Vector2i = Vector2i()
 
 var value:int = -1
 
 func _ready() -> void:
-	connect("pressed", _on_pressed)
+	connect("pressed", pressed)
 
 
 
-func _on_pressed() -> void: 
-	hole_pressed.emit(holeindex)
+func pressed() -> void: 
+	if value == -1:
+		signals.local_marble_submitted.emit(gridpos)
 
 
 func set_value(to:int) -> void:
 	value = to
 	$red.visible = to == 0
 	$blue.visible = to == 1
+
+
+	

@@ -3,6 +3,7 @@ class_name Board
 
 var tile_pck:PackedScene = preload("res://scenes/tile.tscn")
 
+signal slide_finished
 
 var pseudo_board:Array = []
 var gridsize:Vector2i = Vector2i()
@@ -16,18 +17,16 @@ func generate(my_gridsize:Vector2i, my_empties:Array[Vector2i]) -> void:
 	for child in get_children():
 		child.queue_free()
 	
-	var index:int = 0
 	for y in range(gridsize.y):
 		for x in range(gridsize.x):
 			if Vector2i(x,y) in empties:
 				continue
 			var inst:Tile = tile_pck.instantiate()
-			inst.tileindex = index
+			inst.tilepos = Vector2i(x,y)
 			inst.set_tilesize(tile_size)
 			inst.position.x = x*tile_size.x
 			inst.position.y = y*tile_size.y
 			add_child(inst)
-			index += 1
 	
 	pseudo_board.clear()
 	for y in range(gridsize.y*2):
@@ -35,12 +34,35 @@ func generate(my_gridsize:Vector2i, my_empties:Array[Vector2i]) -> void:
 		for x in range(gridsize.x*2):
 			pseudo_board[y].append(-1)
 
-func get_hole(tileindex:int, holeindex:int) -> Hole:
-	return get_child(tileindex).holes.get_child(holeindex)
+func reset() -> void:
+	generate(gridsize, empties) # TODO PLS FIX LATER NOT EFFICIENT
 
-func set_tiles_state(to:int) -> void:
-	for t:Tile in get_children():
-		t.state = to
+
+func place_marble(by_player:int, gridpos:Vector2i) -> void:
+	for tile:Tile in get_children():
+		tile.disabled = false
+		for hole:Hole in tile.holes.get_children():
+			if hole.gridpos == gridpos:
+				hole.set_value(by_player)
+			hole.disabled = true
+		
+	
+
+func slide_tile(tilepos:Vector2i, dir:Vector2i) -> void:
+	for tile:Tile in get_children():
+		tile.disabled = true
+		if tile.tilepos != tilepos:
+			continue
+		var tween:Tween = get_tree().create_tween()
+		tween.tween_property(tile, "position", tile.position+Vector2(dir)*tile.size, 0.3).set_trans(Tween.TRANS_SINE)
+		tween.tween_callback(after_slide)
+
+func after_slide() -> void:
+	slide_finished.emit()
+	for tile:Tile in get_children():
+		tile.disabled = true
+		for hole:Hole in tile.holes.get_children():
+			hole.disabled = false
 
 
 enum Winner {

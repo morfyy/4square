@@ -1,37 +1,19 @@
-extends Control
+extends TextureButton
 class_name Tile
 
-enum {
-	AWAITING_MARBLE=0,
-	AWAITING_SLIDE=1,
-	SLIDING=2,
-	SHAKING=3
-}
-var state:int = AWAITING_MARBLE
 
-
-var tileindex:int = 0
+var tilepos:Vector2i = Vector2i()
 @onready var holes:Control = $holes
 
 func _ready() -> void:
+	disabled = true
 	for i:int in range(holes.get_child_count()):
-		holes.get_child(i).holeindex = i
-		holes.get_child(i).connect("hole_pressed", tile_pressed)
+		holes.get_child(i).gridpos.x = 2*tilepos.x + i % 2
+		holes.get_child(i).gridpos.y = 2*tilepos.y + int(float(i)/2)
+	connect("pressed", pressed)
 
 
-
-func tile_pressed(holeindex:int) -> void:
-	if state == AWAITING_MARBLE:
-		local_marble_requested(holeindex)
-	elif state == AWAITING_SLIDE:
-		local_slide_requested()
-
-func local_marble_requested(holeindex:int) -> void:
-	if holes.get_child(holeindex).value >= 0:
-		return
-	signals.local_marble_submitted.emit(tileindex, holeindex)
-
-func local_slide_requested() -> void:
+func pressed() -> void:
 	var dir:Vector2i = Vector2i(0,0)
 	for ray in $Area2D.get_children():
 		if not ray is RayCast2D:
@@ -49,7 +31,7 @@ func local_slide_requested() -> void:
 		#tween.tween_property(tile,"position:x",position.x,0.1)
 		return
 	
-	signals.local_slide_submitted.emit(tileindex, dir)
+	signals.local_slide_submitted.emit(tilepos, dir)
 
 
 func set_tilesize(to:Vector2) -> void:

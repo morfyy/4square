@@ -7,16 +7,19 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jy7pm"]
 size = Vector2(250, 250)
 
-[node name="Tile" type="NinePatchRect"]
+[node name="Tile" type="TextureButton"]
 offset_right = 256.0
 offset_bottom = 256.0
-texture = ExtResource("1_ywnoi")
+texture_normal = ExtResource("1_ywnoi")
+ignore_texture_size = true
+stretch_mode = 0
 script = ExtResource("2_q7utx")
 
 [node name="holes" type="Control" parent="."]
 anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 256.0
+mouse_filter = 2
 
 [node name="Hole" parent="holes" instance=ExtResource("2_jy7pm")]
 layout_mode = 0
