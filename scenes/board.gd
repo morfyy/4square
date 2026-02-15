@@ -6,19 +6,19 @@ var tile_pck:PackedScene = preload("res://scenes/tile.tscn")
 signal slide_finished
 
 var pseudo_board:Array = []
-var gridsize:Vector2i = Vector2i()
+var tilegrid_size:Vector2i = Vector2i()
 var empties:Array[Vector2i] = []
 
-func generate(my_gridsize:Vector2i, my_empties:Array[Vector2i]) -> void:
-	gridsize = my_gridsize
+func generate(my_tilegrid_size:Vector2i, my_empties:Array[Vector2i]) -> void:
+	tilegrid_size = my_tilegrid_size
 	empties = my_empties
-	var tile_size:Vector2 = Vector2(size.x/gridsize.x, size.y/gridsize.y)
+	var tile_size:Vector2 = Vector2(size.x/tilegrid_size.x, size.y/tilegrid_size.y)
 	
 	for child in get_children():
 		child.queue_free()
 	
-	for y in range(gridsize.y):
-		for x in range(gridsize.x):
+	for y in range(tilegrid_size.y):
+		for x in range(tilegrid_size.x):
 			if Vector2i(x,y) in empties:
 				continue
 			var inst:Tile = tile_pck.instantiate()
@@ -29,13 +29,13 @@ func generate(my_gridsize:Vector2i, my_empties:Array[Vector2i]) -> void:
 			add_child(inst)
 	
 	pseudo_board.clear()
-	for y in range(gridsize.y*2):
+	for y in range(tilegrid_size.y*2):
 		pseudo_board.append([])
-		for x in range(gridsize.x*2):
+		for x in range(tilegrid_size.x*2):
 			pseudo_board[y].append(-1)
 
 func reset() -> void:
-	generate(gridsize, empties) # TODO PLS FIX LATER NOT EFFICIENT
+	generate(tilegrid_size, empties) # TODO PLS FIX LATER NOT EFFICIENT
 
 
 func place_marble(by_player:int, gridpos:Vector2i) -> void:

@@ -29,8 +29,8 @@ func _ready() -> void:
 	board.connect("slide_finished", slide_finished)
 
 # empties, where in grid to don't have tiles
-func create(gridsize:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
-	board.generate(gridsize, empties)
+func create(tilegrid_size:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
+	board.generate(tilegrid_size, empties)
 	
 	var p1:Player = player_pck.instantiate()
 	var p2:Player = player_pck.instantiate()
@@ -88,7 +88,7 @@ func slide_finished() -> void:
 		return
 	
 	# check draw
-	if turns_count >= (board.gridsize.x * board.gridsize.y - board.empties.size())*4:
+	if turns_count >= (board.tilegrid_size.x * board.tilegrid_size.y - board.empties.size())*4:
 		gameover(true, winner)
 		return
 	
