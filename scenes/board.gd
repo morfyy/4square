@@ -9,6 +9,14 @@ var pseudo_board:Array = []
 var tilegrid_size:Vector2i = Vector2i()
 var empties:Array[Vector2i] = []
 
+enum State {
+	AWAITING_MARBLE,
+	AWAITING_SLIDE,
+	WAITING
+}
+
+var state:State = State.WAITING
+
 func generate(my_tilegrid_size:Vector2i, my_empties:Array[Vector2i]) -> void:
 	tilegrid_size = my_tilegrid_size
 	empties = my_empties
@@ -36,12 +44,17 @@ func generate(my_tilegrid_size:Vector2i, my_empties:Array[Vector2i]) -> void:
 				pseudo_board[y].append(-2)
 			else:
 				pseudo_board[y].append(-1)
+	
+	state = State.AWAITING_MARBLE
 
 func reset() -> void:
-	generate(tilegrid_size, empties) # TODO PLS FIX LATER NOT EFFICIENT
+	generate(tilegrid_size, empties) # TODO PLS FIX LATER, NOT EFFICIENT
 
 
 func place_marble(by_player:int, gridpos:Vector2i) -> void:
+	if state != State.AWAITING_MARBLE:
+		return
+	
 	for tile:Tile in get_children():
 		tile.disabled = false
 		for hole:Hole in tile.holes.get_children():
@@ -50,9 +63,14 @@ func place_marble(by_player:int, gridpos:Vector2i) -> void:
 			hole.disabled = true
 	
 	pseudo_board[gridpos.y][gridpos.x] = by_player
+	
+	state = State.AWAITING_SLIDE
 	#print(pseudo_board)
 
 func slide_tile(tilepos:Vector2i, dir:Vector2i) -> void:
+	if state != State.AWAITING_SLIDE:
+		return
+	
 	for tile:Tile in get_children():
 		tile.disabled = true
 		if tile.tilepos != tilepos:
@@ -69,6 +87,8 @@ func slide_tile(tilepos:Vector2i, dir:Vector2i) -> void:
 		for x:int in [2*tilepos.x, 2*tilepos.x+1]:
 			pseudo_board[y+2*dir.y][x+2*dir.x] = pseudo_board[y][x]
 			pseudo_board[y][x] = -2
+	
+	state = State.WAITING
 	#print(pseudo_board)
 
 func after_slide() -> void:
@@ -77,7 +97,24 @@ func after_slide() -> void:
 		tile.disabled = true
 		for hole:Hole in tile.holes.get_children():
 			hole.disabled = false
+	
+	state = State.AWAITING_MARBLE
 
+
+func get_empty_holepos() -> Array[Vector2i]:
+	var out:Array[Vector2i] = []
+	for tile:Tile in get_children():
+		for hole:Hole in tile.holes.get_children():
+			if hole.value == -1:
+				out.append(hole.gridpos)
+	return out
+
+func get_movable_tiles() -> Array[Tile]:
+	var out:Array[Tile] = []
+	for tile:Tile in get_children():
+		if tile.get_movable_dir() != Vector2i(0,0):
+			out.append(tile)
+	return out
 
 enum Winner {
 	NONE=-1,
@@ -86,20 +123,6 @@ enum Winner {
 	BOTH=2
 }
 func get_winner() -> Winner:
-	"# Clear pseudo board
-	for y in range(pseudo_board.size()):
-		for x in range(pseudo_board[y].size()):
-			pseudo_board[y][x] = -1
-	
-	# Update pseudo board
-	for tile:Tile in get_children():
-		var gridpos:Vector2i = Vector2i((tile.position+tile.size*0.5)/tile.size)
-		#print(gridpos)
-		pseudo_board[gridpos.y*2][gridpos.x*2] = tile.holes.get_child(0).value
-		pseudo_board[gridpos.y*2][gridpos.x*2+1] = tile.holes.get_child(1).value
-		pseudo_board[gridpos.y*2+1][gridpos.x*2] = tile.holes.get_child(2).value
-		pseudo_board[gridpos.y*2+1][gridpos.x*2+1] = tile.holes.get_child(3).value"
-	
 	var winner:Winner = Winner.NONE
 	# vec[0] horizontals _
 	# vec[1] verticals |

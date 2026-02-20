@@ -12,16 +12,16 @@ func _ready() -> void:
 		holes.get_child(i).gridpos.y = 2*tilepos.y + int(float(i)/2)
 	connect("pressed", pressed)
 
-
-func pressed() -> void:
-	var dir:Vector2i = Vector2i(0,0)
+func get_movable_dir() -> Vector2i:
 	for ray in $Area2D.get_children():
 		if not ray is RayCast2D:
 			continue
 		if not ray.is_colliding():
-			dir = Vector2i(ray.target_position.normalized())
-			break
-	
+			return Vector2i(ray.target_position.normalized())
+	return Vector2i(0,0)
+
+func pressed() -> void:
+	var dir = get_movable_dir()
 	if dir == Vector2i(0,0):
 		#var tween:Tween = get_tree().create_tween()
 		#tween.tween_property(tile,"position:x",position.x-size.x*0.05,0.1)

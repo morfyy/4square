@@ -11,6 +11,6 @@ func _on_start_pressed() -> void:
 	new_game.create(
 		Vector2i(3,3), [Vector2i(1,1)], 
 		"Player 1", Player.Type.LOCAL, 
-		"Player 2", Player.Type.LOCAL
+		"Player 2", Player.Type.CPU
 		)
 	hide()

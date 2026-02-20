@@ -42,8 +42,10 @@ func create(tilegrid_size:Vector2i, empties:Array[Vector2i], p1name:String, p1ty
 	p2.id = 1
 	icons[0].set_label(p1name)
 	icons[1].set_label(p2name)
+	p1.board = board
+	p2.board = board
 	
-	p1.is_active = true
+	p1.turn_started()
 	icons[0].activate()
 	
 	players.add_child(p1)
@@ -93,10 +95,10 @@ func slide_finished() -> void:
 		return
 	
 	# next turn
-	get_active_player().is_active = false
+	get_active_player().turn_ended()
 	icons[active_player].deactivate()
-	active_player = int(!bool(active_player))
-	get_active_player().is_active = true
+	active_player = (active_player + 1) % 2
+	get_active_player().turn_started()
 	icons[active_player].activate()
 	
 	pop_message(get_active_player().username+"'s turn!", [Color.RED,Color.BLUE][active_player] )
