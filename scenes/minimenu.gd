@@ -6,8 +6,12 @@ class_name MiniMenu
 @onready var btn2:Button = $btn2
 @onready var label:Label = $Label
 
+@export var btn1_text:String = ""
+@export var btn2_text:String = ""
 
 func _ready() -> void:
+	btn1.text = btn1_text
+	btn2.text = btn2_text
 
 	visible = false
 	panel.modulate.a = 0.0

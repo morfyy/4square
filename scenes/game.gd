@@ -10,6 +10,8 @@ var menu_pck:PackedScene = preload("res://scenes/menu.tscn")
 var turns_count:int = 0
 
 @onready var players:Node = $players
+@onready var p1:Player = $players/Player1
+@onready var p2:Player = $players/Player2
 var active_player:int = 0
 
 @onready var icons:Array = [$player1/PlayerIcon, $player2/PlayerIcon]
@@ -32,28 +34,29 @@ func _ready() -> void:
 func create(tilegrid_size:Vector2i, empties:Array[Vector2i], p1name:String, p1type:Player.Type, p2name:String, p2type:Player.Type) -> void:
 	board.generate(tilegrid_size, empties)
 	
-	var p1:Player = player_pck.instantiate()
-	var p2:Player = player_pck.instantiate()
 	p1.username = p1name
 	p2.username = p2name
 	p1.type = p1type
 	p2.type = p2type
 	p1.id = 0
 	p2.id = 1
-	icons[0].set_label(p1name)
-	icons[1].set_label(p2name)
 	p1.board = board
 	p2.board = board
-	
-	p1.turn_started()
+	icons[0].set_label(p1name)
+	icons[1].set_label(p2name)
 	icons[0].activate()
 	
-	players.add_child(p1)
-	players.add_child(p2)
 	p1.connect("marble_submitted", marble_submitted)
 	p2.connect("marble_submitted", marble_submitted)
 	p1.connect("slide_submitted", slide_submitted)
 	p2.connect("slide_submitted", slide_submitted)
+	
+	start_game()
+
+func start_game() -> void:
+	p1.turn_started()
+	p1.game_started()
+	p2.game_started()
 
 
 func local_marble_submitted(gridpos:Vector2i) -> void:
@@ -115,9 +118,9 @@ func gameover(game_draw:bool, winner:Board.Winner) -> void:
 		minimenu.label.text = "RED WON !"
 	else:
 		minimenu.label.text = "BLUE WON !"
-	minimenu.btn1.text = "BACK TO MENU"
-	minimenu.btn2.text = "PLAY AGAIN"
 	minimenu.pop()
+	p1.game_ended(game_draw, winner)
+	p2.game_ended(game_draw, winner)
 
 
 
@@ -128,6 +131,7 @@ func back_to_menu() -> void:
 
 func restart_game() -> void:
 	board.reset()
+	start_game()
 	get_tree().paused = false
 	minimenu.unpop()
 	turns_count = 0
